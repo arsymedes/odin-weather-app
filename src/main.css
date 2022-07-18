@@ -52,6 +52,8 @@ h2 {
   font-size: 4rem;
   font-weight: 400;
   margin: 0;
+  inline-size: 200px;
+  text-align: center;
 }
 
 h3 {

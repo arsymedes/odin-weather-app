@@ -28,7 +28,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Weather App',
+      title: 'Weathering With You',
     }),
   ],
   performance: {

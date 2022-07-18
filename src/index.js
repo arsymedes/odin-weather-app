@@ -8,10 +8,11 @@ import cloudsNight from "./img/Clouds Night.jpg"
 import drizzle from "./img/Drizzle.jpg"
 import rain from "./img/Rain.jpg"
 import snow from "./img/Snow.jpg"
-import test from "./img/test.jpg"
 import thunderstorm from "./img/Thunderstorm.jpg"
+import favicon from "./img/favicon.jpg"
 
 
+const head = document.querySelector("head")
 const body = document.querySelector("body")
 const key = "f9ddde2afd91a0bfc112781b590bca19"
 
@@ -21,10 +22,12 @@ const bgImages = {
   "Clouds d": cloudsDay,
   "Clouds n": cloudsNight,
   "Drizzle d": drizzle,
+  "Drizzle n": drizzle,
   "Rain d": rain,
+  "Rain n": rain,
   "Snow d": snow,
   "Thunderstorm d": thunderstorm,
-  test,
+  "Thunderstorm n": thunderstorm,
 }
 
 function toTitleCase(str) {
@@ -96,7 +99,7 @@ function getDOM(currentWeather, dailyForecast) {
     </div>
     <div class="side">
       <form action="" id="my-form">
-        <input type="search" name="search" id="search" placeholder="e.g. London">
+        <input type="search" name="search" id="search" placeholder="Enter a City Name e.g. London">
         <button type="submit"><svg viewBox="0 0 24 24">
           <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
         </svg></button>
@@ -126,18 +129,26 @@ function getDOM(currentWeather, dailyForecast) {
 }
 
 async function display(city) {
-  const currentWeather = await getCurrentWeather(city)
-  const dailyForecast = await getDailyForecast(city)
+  try {
+    const currentWeather = await getCurrentWeather(city)
+    const dailyForecast = await getDailyForecast(city)
+    
+    head.insertAdjacentHTML("beforeend", `<link rel="icon" href=${favicon}>`);
+    getDOM(currentWeather, dailyForecast)
+    body.style.background = `url(${bgImages[`${currentWeather.mainWeather} ${currentWeather.icon[2]}`]}) no-repeat center center / cover`
 
-  getDOM(currentWeather, dailyForecast)
-  body.style.background = `url(${bgImages[`${currentWeather.mainWeather} ${currentWeather.icon[2]}`]}) no-repeat center center / cover`
-
-  const form = document.querySelector("#my-form")
-  form.addEventListener("submit", (event) => {
-    event.preventDefault()
-    const newCity = form.querySelector("#search").value
-    display(newCity)
-  })
+    const form = document.querySelector("#my-form")
+    form.addEventListener("submit", (event) => {
+      event.preventDefault()
+      const newCity = form.querySelector("#search").value
+      display(newCity)
+    })
+  }
+  catch(error) {
+    const search = document.querySelector("#search")
+    search.value = ""
+    search.placeholder = "City Doesn't Exist, Re-Enter"
+  }
 }
 
-display("Virgin Islands")
+display("Tokyo")
