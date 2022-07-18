@@ -38,7 +38,7 @@ function toTitleCase(str) {
 }
 
 async function getLocation(city) {
-  const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${key}`, {mode: "cors"})
+  const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${key}`, {mode: "cors"})
   const cityData = await response.json()
   const cityLocation = [cityData[0].lat, cityData[0].lon]
   return cityLocation
