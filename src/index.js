@@ -1,5 +1,6 @@
 import "normalize.css"
 import "./main.css"
+import { format, utcToZonedTime } from "date-fns-tz"
 import weatherIcons from "./weatherIcons"
 import clearDay from "./img/Clear Day.jpg"
 import clearNight from "./img/Clear Night.jpg"
@@ -37,6 +38,13 @@ function toTitleCase(str) {
   );
 }
 
+function formatDate(timezone) {
+  const currentDate = new Date()
+  const newDate = utcToZonedTime(currentDate, timezone)
+  const formattedDate = format(newDate, 'HH:mm - eeee, d MMM yyyy')
+  return formattedDate
+}
+
 async function getLocation(city) {
   const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${key}`, {mode: "cors"})
   const cityData = await response.json()
@@ -58,6 +66,7 @@ async function getCurrentWeather(city) {
   const weatherInfo = {
     city,
     mainWeather: currentWeather.weather[0].main,
+    timezone: weather.timezone,
     weather: toTitleCase(currentWeather.weather[0].description),
     icon: currentWeather.weather[0].icon,
     rain: todayWeather.rain ? todayWeather.rain: 100,
@@ -88,8 +97,8 @@ function getDOM(currentWeather, dailyForecast) {
       <h1>${currentWeather.temperature}°</h1>
       <div class="container">
         <div class="main-info">
-          <h2>${currentWeather.city}</h2>
-          <p>06:09 - Monday, 9 Sep 2019</p>
+          <h2>${toTitleCase(currentWeather.city)}</h2>
+          <p>${formatDate(currentWeather.timezone)}</p>
         </div>
         <div class="weather">
         ${weatherIcons[currentWeather.icon]}
